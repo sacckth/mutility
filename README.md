@@ -15,12 +15,14 @@ It does not support exFAT, NTFS, ext2/3/4, or other filesystems.
 
 ## Install
 
-Install the command from GitHub and add it to your `PATH`:
+Install the released version from GitHub and add it to your `PATH`:
 
 ```sh
-uv tool install git+https://github.com/sacckth/mutility
+uv tool install git+https://github.com/sacckth/mutility@v0.1.0
 uv tool update-shell
 ```
+
+Omit `@v0.1.0` to install the latest commit from the default branch instead.
 
 Open a new terminal. `uv tool update-shell` adds uv's tool directory, usually
 `~/.local/bin`, to your shell startup file. Then run `mutility` from any

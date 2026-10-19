@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 
 REPOSITORY = "https://github.com/sacckth/mutility"
+RELEASE = "v0.1.0"
 
 
 def project_directory() -> Path:
@@ -30,10 +31,12 @@ def setup_instructions() -> str:
     root = project_directory()
     destination = tool_directory()
     return (
-        "Install mutility from GitHub and add it to your PATH:\n"
+        f"Install mutility {RELEASE} from GitHub and add it to your PATH:\n"
         "\n"
-        f"  uv tool install git+{REPOSITORY}\n"
+        f"  uv tool install git+{REPOSITORY}@{RELEASE}\n"
         "  uv tool update-shell\n"
+        "\n"
+        f"Omit @{RELEASE} to install the latest commit from the default branch.\n"
         "\n"
         "Open a new terminal. uv tool update-shell adds the tool directory\n"
         f"({destination}) to your shell startup file when it is missing.\n"
@@ -52,7 +55,7 @@ def setup_instructions() -> str:
 def path_hint() -> str:
     return (
         "mutility is not on your PATH yet. Install it with:\n"
-        f"  uv tool install git+{REPOSITORY}\n"
+        f"  uv tool install git+{REPOSITORY}@{RELEASE}\n"
         "  uv tool update-shell\n"
         "Open a new terminal afterward. Run mutility --setup for details."
     )
