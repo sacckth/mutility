@@ -63,24 +63,39 @@ def parse_bare(line: str) -> Entry | None:
     return Entry(normalize_fat(raw), is_dir)
 
 
+def password_required(result: subprocess.CompletedProcess) -> bool:
+    if result.returncode == 0:
+        return False
+    stderr = result.stderr or ""
+    if isinstance(stderr, bytes):
+        stderr = stderr.decode("utf-8", "replace")
+    return "password is required" in stderr.lower()
+
+
 class MTools:
     def __init__(self, device: str, sudo: bool = False) -> None:
         self.device = device
         self.sudo = sudo
 
+    def execute(self, command: list[str], *, text: bool = False) -> subprocess.CompletedProcess:
+        if not self.sudo:
+            return subprocess.run(command, check=False, stdin=subprocess.DEVNULL, capture_output=True, text=text)
+        cached = subprocess.run(
+            ["sudo", "-n", *command],
+            check=False,
+            stdin=subprocess.DEVNULL,
+            capture_output=True,
+            text=text,
+        )
+        if not password_required(cached):
+            return cached
+        return subprocess.run(["sudo", *command], check=False, capture_output=True, text=text)
+
     def run(self, program: str, args: list[str]) -> subprocess.CompletedProcess[bytes]:
         path = find_program(program)
         if path is None:
             raise MToolsError(f"cannot find {program}; install mtools")
-        command = [path, "-i", self.device, *args]
-        if self.sudo:
-            command = ["sudo", "-n", *command]
-        return subprocess.run(
-            command,
-            check=False,
-            stdin=subprocess.DEVNULL,
-            capture_output=True,
-        )
+        return self.execute([path, "-i", self.device, *args])
 
     def run_text(self, program: str, args: list[str]) -> str:
         result = self.run(program, args)

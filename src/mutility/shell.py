@@ -616,9 +616,7 @@ class Shell:
         if subprocess.run(["sync"], check=False).returncode == 0:
             self.needs_sync = False
         command = ["diskutil", "eject", "/dev/disk" + match.group(1)]
-        if self.backend.sudo:
-            command = ["sudo", "-n", *command]
-        completed = subprocess.run(command, capture_output=True, text=True)
+        completed = self.backend.execute(command, text=True)
         if completed.returncode != 0:
             message = (completed.stderr or completed.stdout).strip()
             return self._fail(message or "eject failed")

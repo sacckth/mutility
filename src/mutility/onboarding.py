@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 
 REPOSITORY = "https://github.com/sacckth/mutility"
-RELEASE = "v0.1.0"
+RELEASE = "v0.1.1"
 
 
 def project_directory() -> Path:
