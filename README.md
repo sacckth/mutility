@@ -68,13 +68,24 @@ Inside the shell, ordinary paths refer to the FAT volume. Paths beginning
 with `~/` and `local:` refer to the Mac:
 
 ```text
-mutility / 
-❯ ls
-mutility /documents sync
+💾 mutility in /
+❯ mkdir documents
+
+💾 mutility in / ⚠ sync
 ❯ cp ~/fu.it /documents/
-mutility:/> cat /documents/fu.it
-mutility:/> cp -r /documents local:backup
-mutility:/> exit
+
+💾 mutility in / ⚠ sync
+❯ cd documents
+
+💾 mutility in /documents ⚠ sync
+❯ cat fu.it
+hello
+
+💾 mutility in /documents ⚠ sync
+❯ cp -r /documents local:backup
+
+💾 mutility in /documents ⚠ sync
+❯ exit
 ```
 
 Supported commands include `ls`, `cp`, `mv`, `rm`, `mkdir`, `rmdir`, `cat`,
@@ -84,8 +95,8 @@ Prefix a command with `!` to run it on the Mac.
 Use `help` or `?` inside the shell:
 
 ```text
-mutility:/> help
-mutility:/> ?
+💾 mutility in /
+❯ ?
 ```
 
 Use `--help` for command-line options:
@@ -112,25 +123,33 @@ Use `--ro` to prevent commands that modify the FAT volume:
 uv run mutility --ro /dev/rdisk4s2
 ```
 
-The prompt uses [Starship](https://starship.rs/) when `starship` is installed,
-with the same two-line layout otherwise. Directories are blue in `ls`, and
-common file types are colored as well. Plain output is used when the output
-is not a terminal or `NO_COLOR` is set.
+## Prompt
 
-A yellow `sync` means a copy, move, or delete has not been flushed. The arrow
-is green after success and red after a failed command:
+The prompt is rendered by [Starship](https://starship.rs/) when `starship` is
+installed, using a bundled configuration so your own Starship setup does not
+leak Mac paths or Git status into it. Without Starship, `mutility` draws the
+same two-line prompt itself:
 
 ```text
-mutility /documents sync
+💾 mutility in /documents ⚠ sync
 ❯
 ```
+
+- `💾 mutility` is bold purple.
+- The current directory on the FAT volume is bold cyan.
+- A yellow `⚠ sync` appears after a copy, move, delete, or `mkdir` that has
+  not been flushed. `sync` and `eject` clear it.
+- `❯` is green after a successful command and red after a failed one.
+
+In `ls`, directories are blue, and images, audio, video, archives,
+executables, and PDFs each get their own color. Colors are turned off when
+output is not a terminal or `NO_COLOR` is set. `MUTILITY_COLOR=always` or
+`MUTILITY_COLOR=never` overrides the detection.
 
 Flush writes and eject before removing a physical drive:
 
 ```text
-mutility /
-❯ sync
-mutility /
+💾 mutility in / ⚠ sync
 ❯ eject
 ```
 

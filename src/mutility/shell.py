@@ -11,7 +11,15 @@ import tempfile
 from dataclasses import dataclass
 
 from mutility.backend import Entry, MTools, MToolsError, normalize_fat, to_mtools
-from mutility.style import ERROR, color_entry, color_mdir, colors_enabled, paint, render_prompt
+from mutility.style import (
+    ERROR,
+    color_entry,
+    color_mdir,
+    colors_enabled,
+    paint,
+    readline_safe,
+    render_prompt,
+)
 
 
 class UsageError(Exception):
@@ -227,7 +235,7 @@ class Shell:
         try:
             while True:
                 try:
-                    line = input(self.prompt())
+                    line = input(readline_safe(self.prompt()))
                 except EOFError:
                     self.stdout.write("\n")
                     return 0

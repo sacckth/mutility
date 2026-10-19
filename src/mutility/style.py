@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -89,6 +90,13 @@ def color_mdir(text: str, enabled: bool) -> str:
     return "\n".join(colored) + "\n"
 
 
+ANSI_ESCAPE = re.compile(r"\033\[[0-9;]*m")
+
+
+def readline_safe(prompt: str) -> str:
+    return ANSI_ESCAPE.sub(lambda match: "\001" + match.group(0) + "\002", prompt)
+
+
 def render_prompt(cwd: str, needs_sync: bool, status: int, enabled: bool) -> str:
     if enabled:
         rendered = _starship_prompt(cwd, needs_sync, status)
@@ -98,10 +106,11 @@ def render_prompt(cwd: str, needs_sync: bool, status: int, enabled: bool) -> str
 
 
 def _fallback_prompt(cwd: str, needs_sync: bool, status: int, enabled: bool) -> str:
+    name = paint("💾 mutility", "1;35", enabled)
     path = paint(cwd, "1;36", enabled)
-    line = f"mutility {path}"
+    line = f"{name} in {path}"
     if needs_sync:
-        line += " " + paint("sync", DIRTY, enabled)
+        line += " " + paint("⚠ sync", DIRTY, enabled)
     arrow = paint("❯", "1;31" if status else "1;32", enabled)
     return f"\n{line}\n{arrow} "
 

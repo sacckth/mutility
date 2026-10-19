@@ -6,15 +6,15 @@ format = "$directory$custom$line_break$character"
 style = "bold cyan"
 truncation_length = 8
 truncate_to_repo = false
-format = "mutility [$path]($style) "
+format = "[💾 mutility](bold purple) in [$path]($style) "
 
 [character]
-success_symbol = "[❯](bold green) "
-error_symbol = "[❯](bold red) "
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
 
 [custom.sync]
 command = "printf sync"
 when = "test -n \"$MUTILITY_NEEDS_SYNC\""
 shell = "sh"
 style = "bold yellow"
-format = "[$output]($style) "
+format = "[⚠ $output]($style) "
